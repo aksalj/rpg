@@ -2,10 +2,11 @@ package com.aksalj.rpg;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -16,12 +17,16 @@ import android.os.AsyncTask;
 
 public class Generator {
 
+	private final static String UA = "RPG Android - devaksal@gmail.com";
 	private final static String BASE_URL = "https://www.random.org/passwords";
+	private final static String QUOTA_URL = "https://www.random.org/quota/?format=plain";
 	public final static int MIN_PWD_LEN = 6;
 	private static Generator sInstance;
 	
+	private static long sQuota = 1500; //Assumw we have more than enough
+	
 	public static interface OnGenrateListener{
-		public void onGenerate(ArrayList<String> passwords);
+		public void onGenerate(ArrayList<String> data);
 		public void onError(String errorMessage);
 	}
 	
@@ -31,10 +36,16 @@ public class Generator {
 		return sInstance;
 	}
 	
+	public static long getQuota(){ return sQuota; }
+	
 	private Generator() {}
 	
 	public void generate(int number, int length, OnGenrateListener listener){
 		new GenJob(listener).execute(new String[] {String.valueOf(number), String.valueOf(length)});
+	}
+	
+	public void checkQuota(OnGenrateListener listener){
+		new QuotaJob(listener).execute(new String[]{});
 	}
 	
 	class GenJob extends AsyncTask<String, Void, ArrayList<String>>{
@@ -46,9 +57,29 @@ public class Generator {
 			callback = listener;
 		}
 		
+		protected HttpGet getRequest(String url){
+			HttpGet rq = new HttpGet(url);
+			rq.setHeader("User-Agent", UA);
+			return rq;
+		}
+		
+		protected boolean isValidData(HttpResponse response){
+			boolean validText = false;
+		    Header[] headers = response.getHeaders("Content-Type");
+		    for(Header header:headers){
+		    	validText = header.getValue().contains("text/plain");
+		    }
+		    return validText;
+		}
+		
 		@Override
 		protected ArrayList<String> doInBackground(String... args) {
 			try{
+				
+				if(sQuota <= 50){
+					throw new Exception("Your current bits allowance (" + sQuota +") is low!");
+				}
+				
 				String numberOfPasswords = args[0];
 				String lengthOfPassword = args[1];
 				
@@ -62,15 +93,26 @@ public class Generator {
 			    
 			    String url = BASE_URL + "?" + URLEncodedUtils.format(params, "UTF-8");
 			   
-			    HttpResponse response = client.execute(new HttpGet(url));
+			    HttpResponse response = client.execute(getRequest(url));
+			    
 			    int code = response.getStatusLine().getStatusCode();
+			    boolean validData = isValidData(response);
 
-			    if(code != 200) {
-			      throw new IOException("Got HTTP response code " + code);
+			    if(code != 200 || !validData) {
+			    	throw new IOException("Unable to generate passowrds :(");
 			    }
+			    
+			    //Get Set Quota
+			    new QuotaJob(null).doInBackground(new String[]{});
 
 			    String[] strs = EntityUtils.toString(response.getEntity()).split("\r\n|\n");
-			    return new ArrayList<String>(Arrays.asList(strs));
+			    ArrayList<String> passwords = new ArrayList<String>();
+			    for(String str:strs){
+			    	str.trim();
+			    	if(str.isEmpty()) continue;
+			    	passwords.add(str);
+			    }
+			    return passwords;
 				
 				
 			}catch(Exception ex){ errorMessage = ex.getMessage(); }
@@ -81,13 +123,55 @@ public class Generator {
 		
 		@Override
 		protected void onPostExecute(ArrayList<String> result) {
-			if(callback != null){
-				if(result == null) 
-					callback.onError(errorMessage);
-				else
-					callback.onGenerate(result);
-			}
+			try{
+				if(callback != null){
+					if(result == null) 
+						callback.onError(errorMessage);
+					else
+						callback.onGenerate(result);
+				}
+			}catch(Exception ex){ex.printStackTrace();}
 		}
+	}
+	
+	class QuotaJob extends GenJob{
+
+		public QuotaJob(OnGenrateListener listener) {
+			super(listener);
+		}
+		
+		@Override
+		protected ArrayList<String> doInBackground(String... args) {
+			
+		    try {
+		    	DefaultHttpClient client = new DefaultHttpClient();
+				HttpResponse response = client.execute(getRequest(QUOTA_URL));
+				int code = response.getStatusLine().getStatusCode();
+			    boolean validData = isValidData(response);
+
+			    if(code != 200 || !validData) {
+			    	throw new IOException("Unable to get quota :(");
+			    }
+			    
+			    String quota = EntityUtils.toString(response.getEntity()).trim();
+			    
+			    sQuota = Long.parseLong(quota);
+			    
+			    ArrayList<String> res = new ArrayList<String>();
+			    res.add(quota);
+			    return res;
+				
+			} catch (ClientProtocolException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return null;
+		}
+		
 	}
 
 }

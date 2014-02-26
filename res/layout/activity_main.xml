@@ -71,6 +71,32 @@
             android:layout_height="wrap_content"
             android:max="24"
             android:progress="6" />
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="10dp">
+
+            <TextView 
+    			android:layout_width="wrap_content"
+		    	android:layout_height="wrap_content"
+		    	android:textSize="12sp" 
+		    	android:layout_marginRight="15dp"
+		    	android:text="@string/current_bits_allowance" />
+
+            <TextView
+                android:id="@+id/lblBitsAllowance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="0dp"
+                android:textSize="12sp"
+                android:text="@string/loading"
+                android:textColor="@android:color/holo_green_dark"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/btnGen"
@@ -85,5 +111,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
     </ListView>
-
+    <TextView 
+        android:id="@android:id/empty"
+    	android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:gravity="center"
+    	android:textAppearance="?android:attr/textAppearanceLarge" 
+    	android:text="@string/no_passwords" />
+    
 </LinearLayout>
