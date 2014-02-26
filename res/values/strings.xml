@@ -2,7 +2,19 @@
 <resources>
 
     <string name="app_name">RPG Widget</string>
+    <string name="app_title">Random Password Generator</string>
+    
+    <string name="empty"></string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-
+    
+    <string name="number_of_passwords">Number of passwords</string>
+    <string name="legnth_of_passwords">Length of passwords</string>
+    
+    <string name="digit_one">1</string>
+    <string name="digit_six">6</string>
+    
+    <string name="generate">Generate</string>
+    
+    <string name="pwd_len_req">Password must not be shorter than %1d characters</string>
+    
 </resources>
