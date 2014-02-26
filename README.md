@@ -4,9 +4,9 @@ Generate <em>"secure"</em> random passwords with data from <b>RANDOM.ORG</b>, a 
 
 ##Srceenshots
 
-<img src="doc/img/shot_3.png" width="240px" /> -
-<img src="doc/img/shot_2.png" width="240px" /> -
-<img src="doc/img/shot_1.png" width="240px" /> -
+<img src="doc/img/shot_3.png" width="220px" /> -
+<img src="doc/img/shot_2.png" width="220px" /> -
+<img src="doc/img/shot_1.png" width="220px" /> -
 
 ##TODO
 - Add a app usage instructions.
