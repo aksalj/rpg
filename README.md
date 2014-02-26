@@ -10,7 +10,8 @@ Generate <em>"secure"</em> random passwords with data from <b>RANDOM.ORG</b>, a 
 
 ##TODO
 - Add a app usage instructions.
-- Make app even more usable by adding a homescreen widget
+- Make app even more usable by adding a homescreen widget.
+- Add support for languages other than English.
 
 ##
 ![Creative Commons License](http://i.creativecommons.org/l/by/4.0/88x31.png "Creative Commons License")
