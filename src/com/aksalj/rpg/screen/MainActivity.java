@@ -1,4 +1,4 @@
-package com.aksalj.rpg;
+package com.aksalj.rpg.screen;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -23,22 +23,23 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aksalj.rpg.Generator;
 import com.aksalj.rpg.Generator.OnGenrateListener;
+import com.aksalj.rpg.R;
 
 public class MainActivity extends Activity implements OnGenrateListener,
 		OnSeekBarChangeListener {
 
-	Context mCtx;
-	
+	private Context mCtx;
 	private Generator mGenerator = Generator.getInstance();
 
-	MenuItem mRefreshItem;
-	boolean mRefreshItemState = false;
+	private MenuItem mRefreshItem;
+	private boolean mRefreshItemState = false;
 
-	Button btnGenerate;
-	TextView lblPwdNum, lblPwdLen, lblBits;
-	SeekBar skbPwdNum, skbPwdLen;
-	ListView lstPwds;
+	private Button btnGenerate;
+	private TextView lblPwdNum, lblPwdLen, lblBits;
+	private SeekBar skbPwdNum, skbPwdLen;
+	private ListView lstPwds;
 
 	OnGenrateListener quotaListener = new OnGenrateListener() {
 		
@@ -136,7 +137,6 @@ public class MainActivity extends Activity implements OnGenrateListener,
 		if (mRefreshItem == null) {
 			return;
 		}
-
 		if (animated) {
 			mRefreshItem.setVisible(true);
 			mRefreshItem
@@ -146,8 +146,6 @@ public class MainActivity extends Activity implements OnGenrateListener,
 			mRefreshItem.setActionView(null);
 		}
 	}
-
-	
 
 	private void toggleLoadingMode() {
 		btnGenerate.setEnabled(!btnGenerate.isEnabled());
@@ -173,7 +171,6 @@ public class MainActivity extends Activity implements OnGenrateListener,
 		quota.add(String.valueOf(Generator.getQuota()));
 		quotaListener.onGenerate(quota);
 		
-		// TODO: add refresh list
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1, passwords);
 		lstPwds.setAdapter(adapter);

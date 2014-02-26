@@ -23,7 +23,7 @@ public class Generator {
 	public final static int MIN_PWD_LEN = 6;
 	private static Generator sInstance;
 	
-	private static long sQuota = 1500; //Assumw we have more than enough
+	private static long sQuota = 1500; //Assume we have more than enough?
 	
 	public static interface OnGenrateListener{
 		public void onGenerate(ArrayList<String> data);
@@ -57,13 +57,13 @@ public class Generator {
 			callback = listener;
 		}
 		
-		protected HttpGet getRequest(String url){
+		protected HttpGet prepRequest(String url){
 			HttpGet rq = new HttpGet(url);
 			rq.setHeader("User-Agent", UA);
 			return rq;
 		}
 		
-		protected boolean isValidData(HttpResponse response){
+		protected boolean isValidResponseData(HttpResponse response){
 			boolean validText = false;
 		    Header[] headers = response.getHeaders("Content-Type");
 		    for(Header header:headers){
@@ -93,10 +93,10 @@ public class Generator {
 			    
 			    String url = BASE_URL + "?" + URLEncodedUtils.format(params, "UTF-8");
 			   
-			    HttpResponse response = client.execute(getRequest(url));
+			    HttpResponse response = client.execute(prepRequest(url));
 			    
 			    int code = response.getStatusLine().getStatusCode();
-			    boolean validData = isValidData(response);
+			    boolean validData = isValidResponseData(response);
 
 			    if(code != 200 || !validData) {
 			    	throw new IOException("Unable to generate passowrds :(");
@@ -145,9 +145,9 @@ public class Generator {
 			
 		    try {
 		    	DefaultHttpClient client = new DefaultHttpClient();
-				HttpResponse response = client.execute(getRequest(QUOTA_URL));
+				HttpResponse response = client.execute(prepRequest(QUOTA_URL));
 				int code = response.getStatusLine().getStatusCode();
-			    boolean validData = isValidData(response);
+			    boolean validData = isValidResponseData(response);
 
 			    if(code != 200 || !validData) {
 			    	throw new IOException("Unable to get quota :(");
@@ -162,10 +162,8 @@ public class Generator {
 			    return res;
 				
 			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			

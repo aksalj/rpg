@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.aksalj.rpg.MainActivity"
+            android:name="com.aksalj.rpg.screen.MainActivity"
             android:label="@string/app_title"
             android:screenOrientation="portrait">
             <intent-filter>
