@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Random Password Generator</string>
+    <string name="app_name_short">RPG</string>
+
+    <string name="empty"></string>
+    <string name="about">About</string>
+    <string name="clear">Clear</string>
+
+    <string name="number_of_passwords">Number of passwords</string>
+    <string name="legnth_of_passwords">Length of passwords</string>
+
+    <string name="digit_one">1</string>
+    <string name="digit_six">6</string>
+
+    <string name="generate">Generate</string>
+    <string name="please_wait">Please wait&#8230;</string>
+    <string name="click_to_copy_to_clipboard">Touch a password to copy to clipboard.</string>
+    <string name="no_passwords">No Passwords</string>
+    <string name="copied_to_clipboard">Password copied to clipboard</string>
+    <string name="pwd_len_req">Password must not be shorter than %1d characters</string>
+
+    <string name="disclaimer">Disclaimer</string>
+    <string name="password_generator">Password Generator</string>
+
+    <string name="current_bits_allowance">Bits quota: </string>
+    <string name="bits_format">%1s bits</string>
+    <string name="loading">Loading&#8230;</string>
+
+</resources>
