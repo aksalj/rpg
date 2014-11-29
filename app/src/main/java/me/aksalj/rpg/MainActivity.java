@@ -16,6 +16,7 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -76,6 +77,8 @@ public class MainActivity extends ActionBarActivity implements Generator.OnGener
         mCtx = this;
 
         mActionBar = getSupportActionBar();
+        mActionBar.setTitle(R.string.app_name_long);
+
 
         btnGenerate = (Button) findViewById(R.id.btnGen);
 
@@ -124,8 +127,14 @@ public class MainActivity extends ActionBarActivity implements Generator.OnGener
 
     private void showEULADialog() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        alert.setCancelable(true);
+        alert.setCancelable(false);
         alert.setTitle(R.string.disclaimer);
+        alert.setPositiveButton(R.string.i_understand, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
 
         WebView view = new WebView(this);
         view.loadUrl("file:///android_asset/html/disclaimer.html");

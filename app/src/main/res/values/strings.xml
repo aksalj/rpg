@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Random Password Generator</string>
-    <string name="app_name_short">RPG</string>
+    <string name="app_name_long">Random Password Generator</string>
+    <string name="app_name">RPG</string>
 
     <string name="empty"></string>
     <string name="about">About</string>
@@ -23,6 +23,7 @@
 
     <string name="disclaimer">Disclaimer</string>
     <string name="password_generator">Password Generator</string>
+    <string name="i_understand">I understand!</string>
 
     <string name="current_bits_allowance">Bits quota: </string>
     <string name="bits_format">%1s bits</string>

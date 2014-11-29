@@ -12,7 +12,7 @@
         <activity
             android:name="me.aksalj.rpg.MainActivity"
             android:label="@string/app_name"
-            android:icon="@drawable/ic_launcher">
+            android:logo="@drawable/ic_launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
