@@ -14,18 +14,13 @@ package me.aksalj.rpg;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 
 import android.os.AsyncTask;
+
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 public class Generator {
 
@@ -73,19 +68,9 @@ public class Generator {
             callback = listener;
         }
 
-        protected HttpGet prepRequest(String url) {
-            HttpGet rq = new HttpGet(url);
-            rq.setHeader("User-Agent", UA);
-            return rq;
-        }
 
-        protected boolean isValidResponseData(HttpResponse response) {
-            boolean validText = false;
-            Header[] headers = response.getHeaders("Content-Type");
-            for (Header header : headers) {
-                validText = header.getValue().contains("text/plain");
-            }
-            return validText;
+        protected boolean isValidResponseData(Response response) {
+            return response.header("Content-Type").contains("text/plain");
         }
 
         @Override
@@ -99,29 +84,29 @@ public class Generator {
                 String numberOfPasswords = args[0];
                 String lengthOfPassword = args[1];
 
-                DefaultHttpClient client = new DefaultHttpClient();
 
-                List<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
-                params.add(new BasicNameValuePair("num", numberOfPasswords));
-                params.add(new BasicNameValuePair("len", lengthOfPassword));
-                params.add(new BasicNameValuePair("format", "plain"));
-                params.add(new BasicNameValuePair("rnd", "new"));
+                String url = BASE_URL + String.format("?num=%s&len=%s&format=plain&rnd=new", numberOfPasswords, lengthOfPassword);
 
-                String url = BASE_URL + "?" + URLEncodedUtils.format(params, "UTF-8");
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url(url)
+                        .header("User-Agent", UA)
+                        .build();
+                Response response = client.newCall(request).execute();
 
-                HttpResponse response = client.execute(prepRequest(url));
-
-                int code = response.getStatusLine().getStatusCode();
+                int code = response.code();
                 boolean validData = isValidResponseData(response);
 
                 if (code != 200 || !validData) {
                     throw new IOException("Unable to generate passowrds :(");
                 }
 
+                String body = response.body().string();
+
                 //Get Set Quota
                 new QuotaJob(null).doInBackground(new String[]{});
 
-                String[] strs = EntityUtils.toString(response.getEntity()).split("\r\n|\n");
+                String[] strs = body.split("\r\n|\n");
                 ArrayList<String> passwords = new ArrayList<String>();
                 for (String str : strs) {
                     str.trim();
@@ -164,16 +149,20 @@ public class Generator {
         protected ArrayList<String> doInBackground(String... args) {
 
             try {
-                DefaultHttpClient client = new DefaultHttpClient();
-                HttpResponse response = client.execute(prepRequest(QUOTA_URL));
-                int code = response.getStatusLine().getStatusCode();
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url(QUOTA_URL)
+                        .header("User-Agent", UA)
+                        .build();
+                Response response = client.newCall(request).execute();
+                int code = response.code();
                 boolean validData = isValidResponseData(response);
 
                 if (code != 200 || !validData) {
                     throw new IOException("Unable to get quota :(");
                 }
 
-                String quota = EntityUtils.toString(response.getEntity()).trim();
+                String quota = response.body().string().trim();
 
                 sQuota = Long.parseLong(quota);
 
@@ -181,9 +170,9 @@ public class Generator {
                 res.add(quota);
                 return res;
 
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
             } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
