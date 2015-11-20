@@ -11,6 +11,13 @@ android {
         versionCode 3
         versionName "1.1"
     }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            output.outputFile = new File(
+                    output.outputFile.parent, "RPG_v${variant.versionName}.apk")
+        }
+    }
 }
 
 dependencies {
